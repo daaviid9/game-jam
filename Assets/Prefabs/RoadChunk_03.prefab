@@ -674,6 +674,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7229458042873681012}
+  - component: {fileID: 3298286266263772107}
   m_Layer: 0
   m_Name: RoadChunk_03
   m_TagString: Untagged
@@ -699,6 +700,28 @@ Transform:
   - {fileID: 1166912150186045329}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &3298286266263772107
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7591798394180682832}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &8067574947598190438
 GameObject:
   m_ObjectHideFlags: 0
@@ -1139,6 +1162,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 141165712776378042, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.44
@@ -1267,6 +1298,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trash_Small
       objectReference: {fileID: 0}
+    - target: {fileID: 3018532049178152062, guid: ba36d2d797a6524448a103756e50ae5c, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3018532049178152062, guid: ba36d2d797a6524448a103756e50ae5c, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3146491133151377636, guid: ba36d2d797a6524448a103756e50ae5c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.329
@@ -1387,6 +1426,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 141165712776378042, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.81
@@ -1511,6 +1558,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: 4411086961625290855, guid: abaf13a763c700b4c9759cfe2b3ede0a, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4411086961625290855, guid: abaf13a763c700b4c9759cfe2b3ede0a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6053085787823158449, guid: abaf13a763c700b4c9759cfe2b3ede0a, type: 3}
       propertyPath: m_Name
       value: Hot_Dog
@@ -1585,6 +1640,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 141165712776378042, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.82
@@ -1647,6 +1710,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 141165712776378042, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.41
@@ -1709,6 +1780,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -594387858720427607, guid: 9af55394096b68c42b07d13f698ac0c0, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -594387858720427607, guid: 9af55394096b68c42b07d13f698ac0c0, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2692432772633423667, guid: 9af55394096b68c42b07d13f698ac0c0, type: 3}
       propertyPath: m_Name
       value: Trash_Bag_1
@@ -2031,6 +2110,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -594387858720427607, guid: 9af55394096b68c42b07d13f698ac0c0, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -594387858720427607, guid: 9af55394096b68c42b07d13f698ac0c0, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2692432772633423667, guid: 9af55394096b68c42b07d13f698ac0c0, type: 3}
       propertyPath: m_Name
       value: Trash_Bag_1
@@ -2217,6 +2304,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7645822835685627577, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 141165712776378042, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.16
@@ -2279,6 +2374,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1166912150186045329}
     m_Modifications:
+    - target: {fileID: -620373257139210888, guid: 5f791b112f181e74784456343b4aa5ec, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -620373257139210888, guid: 5f791b112f181e74784456343b4aa5ec, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8824349367838515, guid: 5f791b112f181e74784456343b4aa5ec, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.64

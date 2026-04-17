@@ -60,7 +60,15 @@ public class EnvironmentSpawner : MonoBehaviour
         
         // Vytvorenie inštancie s nulovým posunom X, Y a s určeným Z posunom
         Vector3 spawnPosition = new Vector3(0, 0, spawnZPoint);
-        GameObject newChunk = Instantiate(chunkPrefabs[prefabIndex], spawnPosition, Quaternion.identity);
+        GameObject prefabToSpawn = chunkPrefabs[prefabIndex];
+        
+        if (prefabToSpawn == null)
+        {
+            Debug.LogError($"[EnvironmentSpawner] Pozor! V políčku Chunk Prefabs na pozícii {prefabIndex} ti chýba Prefab (je tam 'None'). Zmaž prázdne políčka alebo tam vlož Prefab!");
+            return;
+        }
+
+        GameObject newChunk = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
         
         // Zabezpečme pre úsek aj automatický pohyb, ak sme ho zabudli dať na prefab
         if (newChunk.GetComponent<WorldMover>() == null)
