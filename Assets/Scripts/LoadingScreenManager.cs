@@ -15,13 +15,13 @@ public class LoadingScreenManager : MonoBehaviour
     public List<Sprite> loadingSprites;
     public float displayDuration = 5f;
     public float fadeDuration = 2f;
-    public float menuFadeDuration = 5f; // Samostatné nastavenie pre dĺžku fade-in menu
+    public float menuFadeDuration = 1f; // Samostatné nastavenie pre dĺžku fade-in menu
     public float zoomSpeed = 0.02f;
     public float maxZoom = 1.3f; // Maximálne priblíženie (1.3 = 130%)
     public float minDarkness = 0.3f; // Minimálne stmavenie (0-1)
 
     [Header("Scene Management")]
-    public string gameSceneName = "SampleScene";
+    public string gameSceneName = "EnviromentScene";
 
     private int currentSpriteIndex = 0;
     private bool isZoomingIn = true; // Striedanie smeru zoomu
