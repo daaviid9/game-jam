@@ -19,6 +19,11 @@ public class PlayerController : MonoBehaviour
     public int maxHealth = 100;
     private int currentHealth;
 
+    [Header("Damage (Poškodenie)")]
+    public int carDamage = 100;
+    public int barricadeDamage = 50;
+    public int edgeDamage = 30; // Používateľ chcel 30 pre kužele/okraje
+
     [Header("Efekty Zničenia (Dýmenie a Výbuch)")]
     [Tooltip("Vylezie jemný dym pri zdraví 50 a menej")]
     public GameObject smokeLightEffect;
@@ -58,28 +63,24 @@ public class PlayerController : MonoBehaviour
         // Register for lane switching events
         controls.Player.Move.performed += ctx => OnMove(ctx.ReadValue<Vector2>());
 
-        // Natvrdo nielen skryjeme GameObjekty, ale ak majú bežiaci ParticleSystem,
-        // tak ho brutálne zastavíme a vymažeme jeho už vygenerované častice z pamäte.
-        ForceStopParticle(smokeLightEffect);
-        ForceStopParticle(smokeHeavyEffect);
-        ForceStopParticle(explosionEffect);
+        // BRUTÁLNY RESET: Vypneme dymy tak, že ich ani kamošova scéna neprebudí
+        ForceStopAndHide(smokeLightEffect);
+        ForceStopAndHide(smokeHeavyEffect);
+        ForceStopAndHide(explosionEffect);
     }
 
-    private void ForceStopParticle(GameObject obj)
+    private void ForceStopAndHide(GameObject obj)
     {
         if (obj == null) return;
         
-        // Zastavenie a vyčistenie partiklov (vymaže ten puff na prvom frame)
-        ParticleSystem ps = obj.GetComponent<ParticleSystem>();
-        if (ps != null)
+        // Nájdeme úplne všetky dymové systémy v objekte aj v jeho deťoch
+        ParticleSystem[] allParticles = obj.GetComponentsInChildren<ParticleSystem>(true);
+        foreach (var ps in allParticles)
         {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-        else
-        {
-            // Ak je to zložitý prefab, skúsime nájsť aspoň v deťoch
-            ParticleSystem childPs = obj.GetComponentInChildren<ParticleSystem>();
-            if (childPs != null) childPs.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ps.Clear(); // Okamžité vymazanie už existujúcich guličiek
+            var main = ps.main;
+            main.playOnAwake = false; // Poistka priamo v kóde
         }
 
         obj.SetActive(false);
@@ -159,28 +160,37 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            // Zistíme si z neho presný Damage
+            // Zistíme si z neho typ a damage
             ObstacleData data = other.GetComponent<ObstacleData>();
-            int damage = data != null ? data.damageAmount : 34;
+            int damage = 30; // Default
 
-            // --- REAKCIA PODĽA TYPU NÁRAZU ---
+            if (data != null)
+            {
+                // Priradíme damage podľa kategórie, ktorú máš v Inspectore
+                switch (data.obstacleType)
+                {
+                    case ObstacleType.Car: damage = carDamage; break;
+                    case ObstacleType.Barricade: damage = barricadeDamage; break;
+                    case ObstacleType.Edge: damage = edgeDamage; break;
+                    default: damage = data.damageAmount; break;
+                }
+            }
+
+            // --- REAKCIA PODĽA TYPU NÁRAZU (Iba okamžité efekty podľa tvojho zoznamu) ---
             if (damage >= 100)
             {
-                // Čelný náraz do auta = Veľký výbuch (Puff)
+                // Car prefarbs = Puff effect
                 PlayParticle(explosionEffect);
             }
             else if (damage >= 50)
             {
-                // Náraz do zátarasy = Tiež výbuch (Puff), presne ako si chcel
+                // Barricade prefabs = Puff effect
                 PlayParticle(explosionEffect);
-                // Môžeme k tomu pridať aj hustý dym pre efekt
-                PlayParticle(smokeHeavyEffect);
             }
             else
             {
-                // Malý okrajový náraz (Smetiak) = Podskočenie auta ako cez spomaľovač
+                // Edge obstacles = Nadskocenie
                 if (!isJumping) StartCoroutine(JumpRoutine());
-                PlayParticle(smokeLightEffect);
             }
 
             // Aplikovanie rany
@@ -193,45 +203,51 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int dmg)
     {
-        // Spustíme trasenie kamery: silnejšie pri autách (Instant kill), jemnejšie pri smetiakoch
+        currentHealth -= dmg;
+        Debug.Log($"<color=red>[NÁRAZ]</color> Ubralo mi {dmg} HP. Zostáva mi: {currentHealth} HP.");
+
+        // Spustíme trasenie kamery
         if (CameraShake.Instance != null && dmg > 0)
         {
             float shakePower = dmg >= 50 ? 0.6f : 0.25f;
             CameraShake.Instance.Shake(0.3f, shakePower);
         }
-
-        currentHealth -= dmg;
         
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            
-            // Auto bolo zničené! 
             PlayParticle(explosionEffect);
-
             if (GameManager.Instance != null) GameManager.Instance.GameOver();
         }
         else
         {
-            // Auto dymí podľa HP
             RefreshLowHealthSmoke();
         }
 
-        // Nakričíme UI Slideru, aby sa hneď zmenšil
         OnHealthChanged?.Invoke(currentHealth);
     }
 
     private void RefreshLowHealthSmoke()
     {
-        if (currentHealth <= 20)
+        // 1. NAJPRV KRITICKÝ STAV (Hustý dym)
+        if (currentHealth <= 30)
         {
             if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
             if (smokeHeavyEffect != null && !smokeHeavyEffect.activeSelf) PlayParticle(smokeHeavyEffect);
+            return; // Ak sme v kritickom stave, kód pre Light Smoke nižšie sa už ani nepozrie
         }
-        else if (currentHealth <= 50)
+        
+        // 2. POTOM ZLÝ STAV (Ľahký dym)
+        if (currentHealth <= 50)
         {
+            if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
             if (smokeLightEffect != null && !smokeLightEffect.activeSelf) PlayParticle(smokeLightEffect);
+            return;
         }
+
+        // 3. ZDRAVÉ AUTO
+        if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
+        if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
     }
 
     // Pomocná funkcia, ktorá nielen zapne objekt, ale natvrdo prikáže dymu začať dymiť

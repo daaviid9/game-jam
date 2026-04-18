@@ -45,21 +45,18 @@ public class ObstacleSpawner : MonoBehaviour
 
         if (roll < carChance)
         {
-            // --- SPAWN AUTO (100 DMG) ---
             if (carPrefabs.Length == 0) return;
             int lane = Random.Range(0, 3); 
-            SpawnSingle(carPrefabs, lane, 100);
+            SpawnSingle(carPrefabs, lane, ObstacleType.Car);
         }
         else if (roll < carChance + edgeChance)
         {
-            // --- SPAWN OKRAJOVÝ OBJEKT (34 DMG) ---
             if (edgeObstacles.Length == 0) return;
             int lane = Random.value > 0.5f ? 0 : 2;
-            SpawnSingle(edgeObstacles, lane, 34);
+            SpawnSingle(edgeObstacles, lane, ObstacleType.Edge);
         }
         else
         {
-            // --- SPAWN ZÁTARASY (50 DMG) ---
             if (barricadePrefabs.Length == 0) return;
             
             bool twoBarricades = Random.value < 0.4f;
@@ -71,19 +68,19 @@ public class ObstacleSpawner : MonoBehaviour
                 {
                     if (i != safeLane)
                     {
-                        SpawnSingle(barricadePrefabs, i, 50);
+                        SpawnSingle(barricadePrefabs, i, ObstacleType.Barricade);
                     }
                 }
             }
             else
             {
                 int lane = Random.Range(0, 3);
-                SpawnSingle(barricadePrefabs, lane, 50);
+                SpawnSingle(barricadePrefabs, lane, ObstacleType.Barricade);
             }
         }
     }
 
-    void SpawnSingle(GameObject[] array, int lane, int damageAmount)
+    void SpawnSingle(GameObject[] array, int lane, ObstacleType type)
     {
         int prefabIndex = Random.Range(0, array.Length);
         GameObject prefabToSpawn = array[prefabIndex];
@@ -94,7 +91,7 @@ public class ObstacleSpawner : MonoBehaviour
             return;
         }
 
-        // Vypočítať pozíciu (lane 0 je -3, lane 1 je 0, lane 2 je 3)
+        // Vypočítať pozíciu
         Vector3 spawnPos = new Vector3((lane - 1) * laneDistance, spawnYOffset, spawnZ);
         
         GameObject obstacle = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
@@ -104,11 +101,18 @@ public class ObstacleSpawner : MonoBehaviour
             obstacle.AddComponent<WorldMover>();
         }
         
-        // Dynamicky mu vlepíme náš nový skript s dátami o zranení
-        if (obstacle.GetComponent<ObstacleData>() == null)
+        // Dynamicky mu vlepíme typ a damage
+        ObstacleData data = obstacle.GetComponent<ObstacleData>();
+        if (data == null) data = obstacle.AddComponent<ObstacleData>();
+        
+        data.obstacleType = type;
+        
+        // Default damage nastavíme tiež pre istotu (použije sa ako fallback)
+        switch (type)
         {
-            ObstacleData data = obstacle.AddComponent<ObstacleData>();
-            data.damageAmount = damageAmount;
+            case ObstacleType.Car: data.damageAmount = 100; break;
+            case ObstacleType.Barricade: data.damageAmount = 50; break;
+            case ObstacleType.Edge: data.damageAmount = 30; break;
         }
 
         // Nastavíme tag, aby fungovali kolízie s hráčom
