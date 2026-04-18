@@ -11,4 +11,6 @@ public class ObstacleData : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip engineLoop;
+    [Range(0f, 1f)]
+    public float engineVolume = 0.1f;
 }
