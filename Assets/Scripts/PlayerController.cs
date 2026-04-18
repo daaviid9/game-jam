@@ -147,6 +147,12 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRot = Quaternion.Euler(0, 0, targetAngle);
             steeringWheel.localRotation = Quaternion.Lerp(steeringWheel.localRotation, targetRot, Time.deltaTime * steeringRotationSpeed);
         }
+
+        // --- RESTORED TILT & LAST_X ---
+        // Aplikujeme náklon celého auta
+        transform.localRotation = Quaternion.Euler(0, 0, currentTilt);
+        // Uložíme si pozíciu pre výpočet rýchlosti v ďalšom frame
+        lastX = newX;
     }
 
     private void OnTriggerEnter(Collider other)

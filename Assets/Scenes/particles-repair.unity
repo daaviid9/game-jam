@@ -1070,12 +1070,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   laneDistance: 3
   laneChangeSpeed: 15
+  steeringWheel: {fileID: 0}
+  maxSteeringAngle: 45
+  steeringRotationSpeed: 15
   maxHealth: 100
   smokeLightEffect: {fileID: 1083623320}
   smokeHeavyEffect: {fileID: 1288940580}
   explosionEffect: {fileID: 461005685}
   jumpHeight: 0.5
   jumpDuration: 0.3
+  maxTiltAngle: 2
+  tiltSmoothing: 10
 --- !u!65 &432921393
 BoxCollider:
   m_ObjectHideFlags: 0
