@@ -14,24 +14,28 @@ public class ObstacleSpawner : MonoBehaviour
     [Range(0, 100)] public float barricadeChance = 20f;
 
     [Header("Spawn Nastavenia")]
-    public float spawnInterval = 1.2f;
+    [Tooltip("Vzdialenosť v metroch medzi vygenerovanými prekážkami. Čím menšie číslo, tým hustejšia premávka.")]
+    public float spawnDistance = 14.5f;
     public float spawnZ = 40f; 
     public float laneDistance = 3f;
     
     [Tooltip("Výška (Y), v ktorej sa prekážky objavia. Zmeň do mínusu, ak lietajú nad zemou.")]
     public float spawnYOffset = 0f;
 
-    private float timer;
+    private float distanceTraveled;
 
     void Update()
     {
         if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
 
-        timer += Time.deltaTime;
-        if (timer >= spawnInterval)
+        // Pripočítavame vzdialenosť podľa aktuálnej rýchlosti sveta
+        distanceTraveled += WorldMover.moveSpeed * Time.deltaTime;
+        
+        // Ak sme prešli požadovanú vzdialenosť, vygeneruje sa prekážka
+        if (distanceTraveled >= spawnDistance)
         {
             SpawnSophisticatedObstacle();
-            timer = 0;
+            distanceTraveled = 0; // Reset vzdialenosti do ďalšej prekážky
         }
     }
 
