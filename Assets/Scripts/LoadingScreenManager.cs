@@ -54,6 +54,9 @@ public class LoadingScreenManager : MonoBehaviour
         displayImage.color = Color.white;
         displayImage.transform.localScale = Vector3.one;
 
+        // SPUSTÍME HUDU V MENU
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic(true);
+
         StartCoroutine(FadeThroughBlackCycle());
         StartCoroutine(FadeInMenu());
     }
@@ -152,6 +155,10 @@ public class LoadingScreenManager : MonoBehaviour
 
     public void StartGame()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMenuMusic(false); // Vypneme hudbu menu pri startu hry
+        }
         SceneManager.LoadScene(gameSceneName);
     }
 

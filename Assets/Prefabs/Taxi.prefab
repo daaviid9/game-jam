@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2434350100270066881}
   - component: {fileID: 444866585003841547}
   - component: {fileID: 7445040213103526598}
+  - component: {fileID: 5114877381605970783}
   m_Layer: 0
   m_Name: Taxi
   m_TagString: Untagged
@@ -113,3 +114,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 3186635122631503911, guid: 565953ce171382e47846839991f5a76a, type: 3}
+--- !u!114 &5114877381605970783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102204373591914974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbeb99b4dccdda646a5a8c7af1a89f15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleData
+  obstacleType: 0
+  damageAmount: 100
+  engineLoop: {fileID: 8300000, guid: c34eafddf1c57544e80b6ebd366e8782, type: 3}

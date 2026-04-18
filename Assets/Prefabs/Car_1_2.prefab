@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 954184248855065485}
   - component: {fileID: 3087506498039285575}
   - component: {fileID: 7171558666171543258}
+  - component: {fileID: 5892832179086902790}
   m_Layer: 0
   m_Name: Car_1_2
   m_TagString: Untagged
@@ -113,3 +114,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -6288713683864380228, guid: 51f1152715beffc479574be51b23d625, type: 3}
+--- !u!114 &5892832179086902790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3592177867728365202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbeb99b4dccdda646a5a8c7af1a89f15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleData
+  obstacleType: 0
+  damageAmount: 100
+  engineLoop: {fileID: 8300000, guid: c34eafddf1c57544e80b6ebd366e8782, type: 3}

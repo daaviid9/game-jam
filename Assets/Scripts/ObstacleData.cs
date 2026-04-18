@@ -8,4 +8,7 @@ public class ObstacleData : MonoBehaviour
     
     [Tooltip("Základné poškodenie (ak ho skript hráča neprepíše zatiaľ)")]
     public int damageAmount = 100;
+
+    [Header("Audio")]
+    public AudioClip engineLoop;
 }
