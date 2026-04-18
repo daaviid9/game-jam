@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour
             currentHealth = 0;
             
             // Auto bolo zničené! Zapneme výbuch a skryjeme normálne dymenie
-            if (explosionEffect != null) explosionEffect.SetActive(true);
+            PlayParticle(explosionEffect);
             if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
             if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
 
@@ -167,12 +167,12 @@ public class PlayerController : MonoBehaviour
             {
                 // Kritický stav: Vypneme jemný dym, zapneme silný dym
                 if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
-                if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(true);
+                PlayParticle(smokeHeavyEffect);
             }
             else if (currentHealth <= 50)
             {
                 // Zlý stav: Iba jemný dym
-                if (smokeLightEffect != null) smokeLightEffect.SetActive(true);
+                PlayParticle(smokeLightEffect);
                 // Pre istotu, ak si nabral lekárničku a vrátil sa z <20 späť nad 20:
                 if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
             }
@@ -180,6 +180,37 @@ public class PlayerController : MonoBehaviour
 
         // Nakričíme UI Slideru, aby sa hneď zmenšil
         OnHealthChanged?.Invoke(currentHealth);
+    }
+
+    // Pomocná funkcia, ktorá nielen zapne objekt, ale natvrdo prikáže dymu začať dymiť
+    private void PlayParticle(GameObject obj)
+    {
+        if (obj == null) 
+        {
+            Debug.LogWarning("[PlayParticle] Objekt je na hodnotách NULL (prázdny)!");
+            return;
+        }
+        
+        obj.SetActive(true); // Zapne "priečinok"
+        Debug.Log($"[PlayParticle] Aktivovaný objekt: {obj.name}. Snažím sa nájsť dym...");
+        
+        ParticleSystem ps = obj.GetComponent<ParticleSystem>();
+        if (ps != null) {
+            Debug.Log($"[PlayParticle] Našli sme hlavný dym priamo na {obj.name}. Spúšťam .Play().");
+            ps.Play(true);
+        }
+        else 
+        {
+            // Skúsi pozrieť, či dym nie je vnorený hlbšie ako "Subpuff"
+            ParticleSystem childPs = obj.GetComponentInChildren<ParticleSystem>();
+            if (childPs != null) {
+                Debug.Log($"[PlayParticle] Našli sme ukrytý dym ({childPs.name}) vnútri objektu {obj.name}. Spúšťam .Play().");
+                childPs.Play(true);
+            }
+            else {
+                Debug.LogError($"[PlayParticle] KATASTROFA! Objekt {obj.name} vôbec neobsahuje žiadny Particle System!");
+            }
+        }
     }
 
     // Kúzelná Coroutina, ktorá nám striedavo vypína a zapína zobrazenie modelu auta
