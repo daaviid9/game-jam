@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     public TMP_Text scoreText;
     [Tooltip("UI Text pre najvyššie skóre (highscore)")]
     public TMP_Text highscoreText;
+    [Tooltip("UI Text pre finálne skóre po prehre")]
+    public TMP_Text finalDistanceText;
 
     [Header("Difficulty Over Time")]
     [Tooltip("O koľko sa rýchlosť hry zvýši každú sekundu")]
@@ -106,6 +108,11 @@ public class GameManager : MonoBehaviour
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
+        }
+
+        if (finalDistanceText != null)
+        {
+            finalDistanceText.text = "You managed to scroll for " + Mathf.FloorToInt(currentScore).ToString() + " meters";
         }
 
         // Pause the world speed via the static variable
