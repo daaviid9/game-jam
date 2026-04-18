@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1493698371004476936}
   - component: {fileID: 3701494387874585282}
   - component: {fileID: -28442630004734768}
+  - component: {fileID: 3101752990935073097}
   m_Layer: 0
   m_Name: Ambulance
   m_TagString: Untagged
@@ -113,3 +114,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 7429108794089598297, guid: da3841936fd28f54f8cd663c02e73176, type: 3}
+--- !u!114 &3101752990935073097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2908944898091809559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbeb99b4dccdda646a5a8c7af1a89f15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleData
+  obstacleType: 0
+  damageAmount: 100
+  engineLoop: {fileID: 8300000, guid: c34eafddf1c57544e80b6ebd366e8782, type: 3}

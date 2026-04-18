@@ -47,6 +47,17 @@ public class PlayerController : MonoBehaviour
     private float currentTilt = 0f;
     private float lastX;
 
+    [Header("Audio (Zvuky)")]
+    public AudioSource engineSource;
+    public AudioSource hissingSource; // Pre zvuk dymu/syčania
+    public AudioSource screechSource; // Pre pískanie gum pri zmene pruhu
+    public AudioClip crashLightClip;
+    public AudioClip crashHeavyClip;
+
+    [Header("Engine Pitch Settings")]
+    public float minPitch = 0.8f;
+    public float maxPitch = 2.2f;
+
     // Tento event hovorí nášmu UI Slideeru (ak vôbec v hre je), nech sa zmenší
     public event System.Action<int> OnHealthChanged;
 
@@ -154,6 +165,26 @@ public class PlayerController : MonoBehaviour
         transform.localRotation = Quaternion.Euler(0, 0, currentTilt);
         // Uložíme si pozíciu pre výpočet rýchlosti v ďalšom frame
         lastX = newX;
+
+        // --- DYNAMICKÝ PITCH MOTORA ---
+        // Pitch sa mení podľa toho, ako rýchlo auto ide (vzhľadom k základu 10)
+        float speedRatio = WorldMover.moveSpeed / 25f; // Napr. pri 25 speed bude vysoký pitch
+        if (engineSource != null) engineSource.pitch = Mathf.Lerp(minPitch, maxPitch, speedRatio);
+
+        // --- PÍSKANIE GÚM PRI MANÉVRI ---
+        if (screechSource != null)
+        {
+            bool isMovingLane = Mathf.Abs(targetX - transform.position.x) > 0.05f;
+
+            if (isMovingLane)
+            {
+                if (!screechSource.isPlaying) screechSource.Play();
+            }
+            else
+            {
+                if (screechSource.isPlaying) screechSource.Stop();
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -179,18 +210,31 @@ public class PlayerController : MonoBehaviour
             // --- REAKCIA PODĽA TYPU NÁRAZU (Iba okamžité efekty podľa tvojho zoznamu) ---
             if (damage >= 100)
             {
-                // Car prefarbs = Puff effect
+                // Car prefarbs = Puff effect + Heavy Crash sound
                 PlayParticle(explosionEffect);
+                if (engineSource != null) engineSource.PlayOneShot(crashHeavyClip);
             }
             else if (damage >= 50)
             {
-                // Barricade prefabs = Puff effect
+                // Barricade prefabs = Puff effect + Heavy Crash sound + Speed Penalty
                 PlayParticle(explosionEffect);
+                if (engineSource != null) engineSource.PlayOneShot(crashHeavyClip);
+                
+                // VÝRAZNEJŠIE SPOMALENIE (Barikáda nás spomalí o 7)
+                WorldMover.moveSpeed -= 7f;
+                if (WorldMover.moveSpeed < 5f) WorldMover.moveSpeed = 5f;
+                Debug.Log($"<color=orange>[SPOMALENIE]</color> Narazil si do barikády. Rýchlosť klesla na: {WorldMover.moveSpeed}");
             }
             else
             {
-                // Edge obstacles = Nadskocenie
+                // Edge obstacles = Nadskocenie + Light Crash sound + Small Speed Penalty
                 if (!isJumping) StartCoroutine(JumpRoutine());
+                if (engineSource != null) engineSource.PlayOneShot(crashLightClip);
+                
+                // SPOMALENIE (Kužeľ nás spomalí o 4)
+                WorldMover.moveSpeed -= 4f;
+                if (WorldMover.moveSpeed < 5f) WorldMover.moveSpeed = 5f;
+                Debug.Log($"<color=orange>[SPOMALENIE]</color> Narazil si do prekážky. Rýchlosť klesla na: {WorldMover.moveSpeed}");
             }
 
             // Aplikovanie rany
@@ -217,6 +261,7 @@ public class PlayerController : MonoBehaviour
         {
             currentHealth = 0;
             PlayParticle(explosionEffect);
+
             if (GameManager.Instance != null) GameManager.Instance.GameOver();
         }
         else
@@ -229,25 +274,40 @@ public class PlayerController : MonoBehaviour
 
     private void RefreshLowHealthSmoke()
     {
-        // 1. NAJPRV KRITICKÝ STAV (Hustý dym)
+        // 1. NAJPRV KRITICKÝ STAV (Hustý dym + syčanie)
         if (currentHealth <= 30)
         {
             if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
             if (smokeHeavyEffect != null && !smokeHeavyEffect.activeSelf) PlayParticle(smokeHeavyEffect);
-            return; // Ak sme v kritickom stave, kód pre Light Smoke nižšie sa už ani nepozrie
+            
+            // Spustíme syčanie dymu
+            if (hissingSource != null && !hissingSource.isPlaying) 
+            {
+                hissingSource.loop = true; // Zabezpečíme, že bude syčať stále kým ho nevypneme
+                hissingSource.Play();
+            }
+            return; 
         }
         
-        // 2. POTOM ZLÝ STAV (Ľahký dym)
+        // 2. POTOM ZLÝ STAV (Ľahký dym + syčanie)
         if (currentHealth <= 50)
         {
             if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
             if (smokeLightEffect != null && !smokeLightEffect.activeSelf) PlayParticle(smokeLightEffect);
+            
+            // Pri ľahkom dyme tiež syčíme, ale možno tichšie (voliteľné)
+            if (hissingSource != null && !hissingSource.isPlaying) 
+            {
+                hissingSource.loop = true;
+                hissingSource.Play();
+            }
             return;
         }
 
-        // 3. ZDRAVÉ AUTO
+        // 3. ZDRAVÉ AUTO (Vypneme dym aj zvuk)
         if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
         if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
+        if (hissingSource != null && hissingSource.isPlaying) hissingSource.Stop();
     }
 
     // Pomocná funkcia, ktorá nielen zapne objekt, ale natvrdo prikáže dymu začať dymiť

@@ -107,6 +107,21 @@ public class ObstacleSpawner : MonoBehaviour
         
         data.obstacleType = type;
         
+        // --- AUDIO SETUP PRE NPC ---
+        if (data.engineLoop != null)
+        {
+            AudioSource source = obstacle.AddComponent<AudioSource>();
+            source.clip = data.engineLoop;
+            source.loop = true;
+            source.playOnAwake = true;
+            source.spatialBlend = 1f; // Plné 3D
+            source.rolloffMode = AudioRolloffMode.Logarithmic;
+            source.minDistance = 2f;
+            source.maxDistance = 20f;
+            source.volume = 0.2f; // Ešte viac stíšime autá v premávke
+            source.Play();
+        }
+
         // Default damage nastavíme tiež pre istotu (použije sa ako fallback)
         switch (type)
         {
