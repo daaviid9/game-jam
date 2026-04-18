@@ -6,6 +6,11 @@ public class PlayerController : MonoBehaviour
     public float laneDistance = 3f;
     public float laneChangeSpeed = 15f;
 
+    [Header("Steering Wheel Settings")]
+    public Transform steeringWheel;
+    public float maxSteeringAngle = 45f;
+    public float steeringRotationSpeed = 15f;
+
     private InputSystem_Actions controls;
     private int targetLane = 1; // 0=Left, 1=Middle, 2=Right
     private Vector2 moveInput;
@@ -124,9 +129,24 @@ public class PlayerController : MonoBehaviour
         
         // Aplikujeme pohyb aj rotáciu
         transform.position = new Vector3(newX, transform.position.y, transform.position.z);
-        transform.localRotation = Quaternion.Euler(0, 0, currentTilt);
 
-        lastX = newX;
+        // Steering Wheel Rotation
+        if (steeringWheel != null)
+        {
+            float distanceToTarget = targetX - transform.position.x;
+            float targetAngle = 0f;
+
+            // Ak sa ešte hýbeme (sme ďalej ako 0.1 od cieľa), držíme plný vytočený volant
+            if (Mathf.Abs(distanceToTarget) > 0.2f)
+            {
+                // Ak je distanceToTarget kladná, ideme doprava -> volant točíme doprava (záporný Z uhol)
+                targetAngle = (distanceToTarget < 0) ? -maxSteeringAngle : maxSteeringAngle;
+            }
+
+            // Plynule interpolujeme do zvoleného uhla (0 alebo max)
+            Quaternion targetRot = Quaternion.Euler(0, 0, targetAngle);
+            steeringWheel.localRotation = Quaternion.Lerp(steeringWheel.localRotation, targetRot, Time.deltaTime * steeringRotationSpeed);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
