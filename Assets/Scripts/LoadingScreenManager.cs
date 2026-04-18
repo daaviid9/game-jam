@@ -14,8 +14,8 @@ public class LoadingScreenManager : MonoBehaviour
     [Header("Loading Settings")]
     public List<Sprite> loadingSprites;
     public float displayDuration = 5f;
-    public float fadeDuration = 2f;
-    public float menuFadeDuration = 1f; // Samostatné nastavenie pre dĺžku fade-in menu
+    public float fadeDuration = 1.5f;
+    public float menuFadeDuration = 0.5f; // Rýchlejší fade (0.5s namiesto 1s)
     public float zoomSpeed = 0.02f;
     public float maxZoom = 1.3f; // Maximálne priblíženie (1.3 = 130%)
     public float minDarkness = 0.3f; // Minimálne stmavenie (0-1)
@@ -34,8 +34,10 @@ public class LoadingScreenManager : MonoBehaviour
             
         if (menuPanel != null)
         {
-            menuPanel.alpha = 0f; // 0% viditeľnosť textu
-            menuPanel.blocksRaycasts = false;
+            menuPanel.alpha = 0f;
+            // Zapneme raycasty hneď v Awake, aby mali tlačidlá hover aj počas fadu
+            menuPanel.blocksRaycasts = true; 
+            menuPanel.interactable = true;
         }
     }
 
@@ -60,6 +62,10 @@ public class LoadingScreenManager : MonoBehaviour
     {
         if (menuPanel == null) yield break;
 
+        // Uistíme sa, že sú klikateľné hneď od začiatku fadu
+        menuPanel.blocksRaycasts = true;
+        menuPanel.interactable = true;
+
         float elapsed = 0;
         while (elapsed < menuFadeDuration)
         {
@@ -69,7 +75,6 @@ public class LoadingScreenManager : MonoBehaviour
         }
 
         menuPanel.alpha = 1f;
-        menuPanel.blocksRaycasts = true;
     }
 
     IEnumerator FadeThroughBlackCycle()

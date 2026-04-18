@@ -252,12 +252,9 @@ MonoBehaviour:
   - {fileID: 1280414521145918320, guid: c46b09b837db5d546890e409caf769e6, type: 3}
   edgeObstacles:
   - {fileID: 774150586620734464, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
-  - {fileID: 1499413424437445256, guid: a5391901c82175647a0dc80298d1724e, type: 3}
   - {fileID: 2692432772633423667, guid: 9af55394096b68c42b07d13f698ac0c0, type: 3}
-  - {fileID: 5280000169877883316, guid: d90aae874bef7074eac4ba2f7fa1097d, type: 3}
   - {fileID: 2369251498285015646, guid: ba36d2d797a6524448a103756e50ae5c, type: 3}
   barricadePrefabs:
-  - {fileID: 774150586620734464, guid: 31f228c1024f8da4581961e96457b4b4, type: 3}
   - {fileID: 1989318905738134537, guid: 23b3ee2b372b87943a6cbce286749574, type: 3}
   - {fileID: 1969914521657366805, guid: 068c53bb3cbf50444a3c727dabf5dbbc, type: 3}
   - {fileID: 5427522932507016689, guid: 88434706d6ff5e243868b378b33cd8b1, type: 3}
@@ -1074,11 +1071,11 @@ MonoBehaviour:
   laneDistance: 3
   laneChangeSpeed: 15
   maxHealth: 100
-  invincibilityDuration: 1.5
-  blinkInterval: 0.1
   smokeLightEffect: {fileID: 1083623320}
   smokeHeavyEffect: {fileID: 1288940580}
   explosionEffect: {fileID: 461005685}
+  jumpHeight: 0.5
+  jumpDuration: 0.3
 --- !u!65 &432921393
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1576,7 +1573,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &679730007
 Transform:
   m_ObjectHideFlags: 0

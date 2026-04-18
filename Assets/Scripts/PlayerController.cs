@@ -14,15 +14,6 @@ public class PlayerController : MonoBehaviour
     public int maxHealth = 100;
     private int currentHealth;
 
-    [Header("Nesmrteľnosť (I-Frames) po náraze")]
-    [Tooltip("Ako dlho po náraze bude auto presvitať stredom prekážok bez zranenia")]
-    public float invincibilityDuration = 1.5f;
-    private bool isInvincible = false;
-    public float blinkInterval = 0.1f; // Rýchlosť blikania auta
-    
-    // Budeme vypípať celú viditeľnosť modelu auta pri blikaní
-    private MeshRenderer[] carRenderers;
-
     [Header("Efekty Zničenia (Dýmenie a Výbuch)")]
     [Tooltip("Vylezie jemný dym pri zdraví 50 a menej")]
     public GameObject smokeLightEffect;
@@ -33,15 +24,26 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Explózia pri totálnom zničení (zdravie 0)")]
     public GameObject explosionEffect;
 
+    [Header("Animácia nárazu (Skok)")]
+    public float jumpHeight = 0.5f;
+    public float jumpDuration = 0.3f;
+    private bool isJumping = false;
+
+    [Header("Nakláňanie (Tilt) pri zatáčaní")]
+    [Tooltip("Maximálny uhol naklonenia auta pri zmene pruhu")]
+    public float maxTiltAngle = 10f;
+    [Tooltip("Rýchlosť, akou sa auto vracia do rovnej polohy")]
+    public float tiltSmoothing = 10f;
+    private float currentTilt = 0f;
+    private float lastX;
+
     // Tento event hovorí nášmu UI Slideeru (ak vôbec v hre je), nech sa zmenší
     public event System.Action<int> OnHealthChanged;
 
     void Start()
     {
         currentHealth = maxHealth;
-        
-        // Najde úplne všetky viditeľné časti modelu auta a jeho kolies atď.
-        carRenderers = GetComponentsInChildren<MeshRenderer>();
+        lastX = transform.position.x;
     }
 
     void Awake()
@@ -107,30 +109,58 @@ public class PlayerController : MonoBehaviour
     {
         if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
 
-        // Calculate target X position
         float targetX = (targetLane - 1) * laneDistance;
-        
-        // Smoothly interpolate
         float newX = Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * laneChangeSpeed);
+        
+        // --- VÝPOČET NAKLÁŇANIA (TILT) ---
+        // Zistíme smer a rýchlosť pohybu do boku
+        float movementDelta = newX - lastX;
+        // Ak ideme doprava (delta > 0), auto sa nakloní doľava a naopak (preto to mínus)
+        float targetTilt = -(movementDelta / Time.deltaTime) * (maxTiltAngle / 2f);
+        targetTilt = Mathf.Clamp(targetTilt, -maxTiltAngle, maxTiltAngle);
+
+        // Plynulé vyhladenie náklonu
+        currentTilt = Mathf.Lerp(currentTilt, targetTilt, Time.deltaTime * tiltSmoothing);
+        
+        // Aplikujeme pohyb aj rotáciu
         transform.position = new Vector3(newX, transform.position.y, transform.position.z);
+        transform.localRotation = Quaternion.Euler(0, 0, currentTilt);
+
+        lastX = newX;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Obstacle"))
         {
-            // Ak je nesmrteľný a bliká, náraz úplne odignorujeme!
-            if (isInvincible) return; 
-
             // Zistíme si z neho presný Damage
             ObstacleData data = other.GetComponent<ObstacleData>();
-            int damage = data != null ? data.damageAmount : 100; // Ak nemá dáta, default zabije
+            int damage = data != null ? data.damageAmount : 34;
+
+            // --- REAKCIA PODĽA TYPU NÁRAZU ---
+            if (damage >= 100)
+            {
+                // Čelný náraz do auta = Veľký výbuch (Puff)
+                PlayParticle(explosionEffect);
+            }
+            else if (damage >= 50)
+            {
+                // Náraz do zátarasy = Tiež výbuch (Puff), presne ako si chcel
+                PlayParticle(explosionEffect);
+                // Môžeme k tomu pridať aj hustý dym pre efekt
+                PlayParticle(smokeHeavyEffect);
+            }
+            else
+            {
+                // Malý okrajový náraz (Smetiak) = Podskočenie auta ako cez spomaľovač
+                if (!isJumping) StartCoroutine(JumpRoutine());
+                PlayParticle(smokeLightEffect);
+            }
 
             // Aplikovanie rany
             TakeDamage(damage);
 
-            // Aby naša hra mala ten "Juicy feeling", prekážku okamžite rozbijeme/zmažeme,
-            // čím dáme pocit, že sme do nej buchli, a nezasekneme sa dnu v jej collideroch
+            // Zničenie prekážky
             Destroy(other.gameObject); 
         }
     }
@@ -150,97 +180,75 @@ public class PlayerController : MonoBehaviour
         {
             currentHealth = 0;
             
-            // Auto bolo zničené! Zapneme výbuch a skryjeme normálne dymenie
+            // Auto bolo zničené! 
             PlayParticle(explosionEffect);
-            if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
-            if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
 
             if (GameManager.Instance != null) GameManager.Instance.GameOver();
         }
         else
         {
-            // Ešte nám ostal Health, spustíme nesmrteľné blikanie
-            StartCoroutine(InvincibilityRoutine());
-
-            // --- SMOKE LOGIKA PODĽA HP ---
-            if (currentHealth <= 20)
-            {
-                // Kritický stav: Vypneme jemný dym, zapneme silný dym
-                if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
-                PlayParticle(smokeHeavyEffect);
-            }
-            else if (currentHealth <= 50)
-            {
-                // Zlý stav: Iba jemný dym
-                PlayParticle(smokeLightEffect);
-                // Pre istotu, ak si nabral lekárničku a vrátil sa z <20 späť nad 20:
-                if (smokeHeavyEffect != null) smokeHeavyEffect.SetActive(false);
-            }
+            // Auto dymí podľa HP
+            RefreshLowHealthSmoke();
         }
 
         // Nakričíme UI Slideru, aby sa hneď zmenšil
         OnHealthChanged?.Invoke(currentHealth);
     }
 
+    private void RefreshLowHealthSmoke()
+    {
+        if (currentHealth <= 20)
+        {
+            if (smokeLightEffect != null) smokeLightEffect.SetActive(false);
+            if (smokeHeavyEffect != null && !smokeHeavyEffect.activeSelf) PlayParticle(smokeHeavyEffect);
+        }
+        else if (currentHealth <= 50)
+        {
+            if (smokeLightEffect != null && !smokeLightEffect.activeSelf) PlayParticle(smokeLightEffect);
+        }
+    }
+
     // Pomocná funkcia, ktorá nielen zapne objekt, ale natvrdo prikáže dymu začať dymiť
     private void PlayParticle(GameObject obj)
     {
-        if (obj == null) 
-        {
-            Debug.LogWarning("[PlayParticle] Objekt je na hodnotách NULL (prázdny)!");
-            return;
-        }
+        if (obj == null) return;
         
-        obj.SetActive(true); // Zapne "priečinok"
-        Debug.Log($"[PlayParticle] Aktivovaný objekt: {obj.name}. Snažím sa nájsť dym...");
+        obj.SetActive(true); // Zapne objekt v hierarchii
         
+        // Pokúsi sa nájsť a spustiť Particle System na samotnom objekte
         ParticleSystem ps = obj.GetComponent<ParticleSystem>();
-        if (ps != null) {
-            Debug.Log($"[PlayParticle] Našli sme hlavný dym priamo na {obj.name}. Spúšťam .Play().");
+        if (ps != null) 
+        {
             ps.Play(true);
         }
         else 
         {
-            // Skúsi pozrieť, či dym nie je vnorený hlbšie ako "Subpuff"
+            // Ak je to zložitý prefab (napr. výbuch z viacerých častí), spustí všetky Particle Systémy vnútri
             ParticleSystem childPs = obj.GetComponentInChildren<ParticleSystem>();
-            if (childPs != null) {
-                Debug.Log($"[PlayParticle] Našli sme ukrytý dym ({childPs.name}) vnútri objektu {obj.name}. Spúšťam .Play().");
-                childPs.Play(true);
-            }
-            else {
-                Debug.LogError($"[PlayParticle] KATASTROFA! Objekt {obj.name} vôbec neobsahuje žiadny Particle System!");
-            }
+            if (childPs != null) childPs.Play(true);
         }
     }
 
-    // Kúzelná Coroutina, ktorá nám striedavo vypína a zapína zobrazenie modelu auta
-    private System.Collections.IEnumerator InvincibilityRoutine()
+    // Coroutina pre "skok" cez prekážku
+    private System.Collections.IEnumerator JumpRoutine()
     {
-        isInvincible = true;
+        isJumping = true;
+        Vector3 startPos = transform.localPosition;
         float elapsed = 0f;
 
-        while (elapsed < invincibilityDuration)
+        while (elapsed < jumpDuration)
         {
-            // Kúzlo z matematiky Múdrych: toto vytvorí spravodlivý cyklus TRUE-FALSE-TRUE podľa času
-            bool isVisible = (elapsed % (blinkInterval * 2)) < blinkInterval;
-            SetRenderers(isVisible);
-
             elapsed += Time.deltaTime;
+            float normalizedTime = elapsed / jumpDuration;
+            
+            // Sinusoidový pohyb (hore a dole)
+            float yOffset = Mathf.Sin(normalizedTime * Mathf.PI) * jumpHeight;
+            transform.localPosition = new Vector3(startPos.x, startPos.y + yOffset, startPos.z);
+            
             yield return null;
         }
 
-        // Musíme sa ubezpečiť, že auto určiťe nezostane zacyklené v neviditeľnosti
-        SetRenderers(true);
-        isInvincible = false;
-    }
-
-    private void SetRenderers(bool state)
-    {
-        if (carRenderers == null) return;
-        // Skryje / odkryje auto na obrazovke
-        foreach (var r in carRenderers)
-        {
-            if (r != null) r.enabled = state;
-        }
+        transform.localPosition = startPos;
+        isJumping = false;
     }
 }
