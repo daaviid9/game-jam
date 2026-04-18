@@ -3,7 +3,22 @@ guid: 11e4481440ada044e808423640c7ab43
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Clock Backgound Speed
+    second: {fileID: 2100000, guid: 048ac71b71ea7924886990874e34b284, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Clock Background Rounds
+    second: {fileID: 2100000, guid: 3845a6e4984d9ff44ab86aca45d9ad4f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Screen
+    second: {fileID: 2100000, guid: 5975ee0da8ddaad47a4cab58c98e6559, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
