@@ -9,6 +9,9 @@ public class PhoneSystem : MonoBehaviour
     public GameObject phoneOverlay; 
     public Slider fomoSlider;       
 
+    [Header("Hand Reference")]
+    public HandController handController;
+
     [Header("Post-Processing Settings")]
     public Volume postProcessVolume; // Assign Global Volume here in Inspector
     public float maxVignetteIntensity = 1f; // How dark it gets at 0% FOMO
@@ -92,6 +95,7 @@ public class PhoneSystem : MonoBehaviour
         {
             // Scrolling on phone
             if (phoneOverlay != null) phoneOverlay.SetActive(true);
+            if (handController != null) handController.SetRaised(true);
             fomoValue += refillRate * Time.deltaTime;
             
             // Camera zoom-in effect
@@ -102,6 +106,7 @@ public class PhoneSystem : MonoBehaviour
         {
             // Driving
             if (phoneOverlay != null) phoneOverlay.SetActive(false);
+            if (handController != null) handController.SetRaised(false);
             fomoValue -= drainRate * Time.deltaTime;
             
             // Normal FOV
