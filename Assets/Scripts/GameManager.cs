@@ -43,10 +43,11 @@ public class GameManager : MonoBehaviour
 
         // Load Highscore on start
         highscore = PlayerPrefs.GetFloat("Highscore", 0f);
-        if (highscoreText != null)
-        {
-            highscoreText.text = "Highscore: " + Mathf.FloorToInt(highscore).ToString();
-        }
+        // Highscore UI je dočasne skryté
+        // if (highscoreText != null)
+        // {
+        //     highscoreText.text = "Highscore: " + Mathf.FloorToInt(highscore).ToString();
+        // }
     }
 
     private void Start()
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviour
         
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + Mathf.FloorToInt(currentScore).ToString();
+            scoreText.text = Mathf.FloorToInt(currentScore).ToString() + " m";
         }
 
         // 2. Postupné zrýchľovanie hry
@@ -91,13 +92,14 @@ public class GameManager : MonoBehaviour
         if (currentScore > highscore)
         {
             highscore = currentScore;
-            PlayerPrefs.SetFloat("Highscore", highscore);
-            PlayerPrefs.Save();
+            // Highscore ukladanie do PlayerPrefs a updatovanie UI je momentálne vypnuté
+            // PlayerPrefs.SetFloat("Highscore", highscore);
+            // PlayerPrefs.Save();
             
-            if (highscoreText != null)
-            {
-                highscoreText.text = "Highscore: " + Mathf.FloorToInt(highscore).ToString();
-            }
+            // if (highscoreText != null)
+            // {
+            //     highscoreText.text = "Highscore: " + Mathf.FloorToInt(highscore).ToString();
+            // }
         }
 
         // Show UI

@@ -320,7 +320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &252023599
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1259,7 +1259,7 @@ RectTransform:
   m_Father: {fileID: 619980070}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1857,7 +1857,7 @@ RectTransform:
   m_Father: {fileID: 282675906}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2395,7 +2395,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1315520855
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2858,7 +2858,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 133.3, y: -85}
+  m_AnchoredPosition: {x: 805, y: -41.1}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1513522324
@@ -2881,7 +2881,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Score:'
+  m_text: 0 m
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7e6fddb111d72ef4db58cb409d03cd89, type: 2}
   m_sharedMaterial: {fileID: 161421341786798072, guid: 7e6fddb111d72ef4db58cb409d03cd89, type: 2}
@@ -3183,7 +3183,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1883192623
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3200,7 +3200,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 133.2, y: -104.5}
+  m_AnchoredPosition: {x: 675.6, y: -65.7}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1883192624
@@ -3223,7 +3223,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Highest Score: '
+  m_text: 'Longest distance travelled :'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7e6fddb111d72ef4db58cb409d03cd89, type: 2}
   m_sharedMaterial: {fileID: 161421341786798072, guid: 7e6fddb111d72ef4db58cb409d03cd89, type: 2}
@@ -3289,7 +3289,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -21.809845, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3670,6 +3670,11 @@ MonoBehaviour:
   screenMaterial: {fileID: 2100000, guid: 017a6494a230b02479a30169fe2e1cf1, type: 2}
   reelClips:
   - {fileID: 32900000, guid: 6e4f14c9a57cf4abe9cbfc538e29a58f, type: 3}
+  - {fileID: 32900000, guid: e22c410836be543229da6efc02bae363, type: 3}
+  - {fileID: 32900000, guid: 12ffc2dca6b0c4c0f85113a3b3dd7bb7, type: 3}
+  - {fileID: 32900000, guid: a70b494f6131c436d843ad0572147c86, type: 3}
+  - {fileID: 32900000, guid: b1cbd2d81f9be4ba3a5e2e713ffd24ca, type: 3}
+  - {fileID: 32900000, guid: 5394c52784b9548bc9900b69db40a325, type: 3}
   - {fileID: 32900000, guid: cff275cf02bc0417ba51c479ad0eda94, type: 3}
   randomOrder: 1
   reelDuration: 5
