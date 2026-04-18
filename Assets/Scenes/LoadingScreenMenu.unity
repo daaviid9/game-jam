@@ -875,7 +875,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7471e121b3660734294463b5abe86290, type: 3}
   displayDuration: 5
   fadeDuration: 3
-  menuFadeDuration: 5
+  menuFadeDuration: 0.5
   zoomSpeed: 0.02
   maxZoom: 1.3
   minDarkness: 0.5
