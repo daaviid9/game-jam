@@ -24,11 +24,16 @@ public class ReelsManager : MonoBehaviour
     public float reelDuration = 5f;       // How long each reel plays
     public float swipeDuration = 0.4f;    // How long the swipe animation takes
     public AnimationCurve swipeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    [Header("Audio")]
+    public AudioSource reelsAudioSource;  // AudioSource pre zvuk reelov
+    public AudioClip[] reelAudioClips;    // Zvuky prislúchajúce k videám (ideálne 5s kúsky)
     
     private bool useA = true;              // Which player is currently active
     private float currentReelTimer = 0f;
     private bool isSwiping = false;
     private int lastClipIndex = -1;
+    private bool isActive = false;         // Či je mobil vytiahnutý
     
     void Start()
     {
@@ -38,20 +43,63 @@ public class ReelsManager : MonoBehaviour
             return;
         }
         
-        // Start with player A playing first clip
+        // Prepare first clip
         playerA.clip = PickNextClip();
         playerA.targetTexture = textureA;
-        playerA.isLooping = false;
-        playerA.Play();
+        playerA.isLooping = true; // Loopujeme, aby video išlo až kým nepríde swipe
         
-        // Set screen material to show texture A initially
+        // --- PRIDANÉ: Prvotný zvuk ---
+        if (reelsAudioSource != null && reelAudioClips != null && lastClipIndex < reelAudioClips.Length)
+        {
+            reelsAudioSource.clip = reelAudioClips[lastClipIndex];
+            reelsAudioSource.loop = true; 
+        }
+
+        // Set screen material initially
         if (screenMaterial != null)
             screenMaterial.mainTexture = textureA;
+
+        // Start paused
+        playerA.Pause();
+        if (reelsAudioSource != null) reelsAudioSource.Pause();
     }
     
+    // --- PRIDANÉ: Ovládanie cez PhoneSystem ---
+    public void SetActive(bool active)
+    {
+        // Ak práve vyťahujeme mobil, chceme HNEĎ nové video, aby to nevyzeralo zaseknuto
+        if (active && !isActive)
+        {
+            currentReelTimer = 0f; // Resetujeme časovač reelsky
+            
+            // Vyberieme nové video pre aktuálny prehrávač
+            VideoPlayer currentPlayer = useA ? playerA : playerB;
+            currentPlayer.clip = PickNextClip();
+            currentPlayer.Play();
+
+            // Zosynchronizujeme zvuk
+            if (reelsAudioSource != null && reelAudioClips != null && lastClipIndex < reelAudioClips.Length)
+            {
+                reelsAudioSource.clip = reelAudioClips[lastClipIndex];
+                reelsAudioSource.Play();
+            }
+        }
+
+        isActive = active;
+
+        if (!active)
+        {
+            // Pri schovaní mobilu len pauzneme
+            VideoPlayer currentPlayer = useA ? playerA : playerB;
+            if (currentPlayer.isPlaying) currentPlayer.Pause();
+            if (reelsAudioSource != null && reelsAudioSource.isPlaying) reelsAudioSource.Pause();
+        }
+    }
+
     void Update()
     {
-        if (isSwiping || reelClips == null || reelClips.Length == 0) return;
+        // Bežíme časovač len ak je mobil aktívny
+        if (!isActive || isSwiping || reelClips == null || reelClips.Length == 0) return;
         
         currentReelTimer += Time.deltaTime;
         
@@ -97,7 +145,7 @@ public class ReelsManager : MonoBehaviour
         
         nextPlayer.clip = PickNextClip();
         nextPlayer.targetTexture = nextTex;
-        nextPlayer.isLooping = false;
+        nextPlayer.isLooping = true;
         nextPlayer.Prepare();
         
         // Wait for next video to be ready
@@ -105,6 +153,13 @@ public class ReelsManager : MonoBehaviour
             yield return null;
         
         nextPlayer.Play();
+
+        // --- PRIDANÉ: Prepnutie zvuku súčasne s videom ---
+        if (reelsAudioSource != null && reelAudioClips != null && lastClipIndex < reelAudioClips.Length)
+        {
+            reelsAudioSource.clip = reelAudioClips[lastClipIndex];
+            reelsAudioSource.Play();
+        }
         
         // Animate swipe: blend from current texture to next
         float elapsed = 0f;

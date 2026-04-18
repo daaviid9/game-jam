@@ -99,12 +99,12 @@ public class PlayerController : MonoBehaviour
 
     void OnEnable()
     {
-        controls.Enable();
+        if (controls != null) controls.Enable();
     }
 
     void OnDisable()
     {
-        controls.Disable();
+        if (controls != null) controls.Disable();
     }
 
     private void OnMove(Vector2 direction)
