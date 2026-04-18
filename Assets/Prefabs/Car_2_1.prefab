@@ -131,6 +131,7 @@ MonoBehaviour:
   obstacleType: 0
   damageAmount: 100
   engineLoop: {fileID: 8300000, guid: c34eafddf1c57544e80b6ebd366e8782, type: 3}
+  engineVolume: 0.45
 --- !u!1001 &1329371270468908425
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -118,7 +118,7 @@ public class ObstacleSpawner : MonoBehaviour
             source.rolloffMode = AudioRolloffMode.Logarithmic;
             source.minDistance = 2f;
             source.maxDistance = 20f;
-            source.volume = 0.2f; // Ešte viac stíšime autá v premávke
+            source.volume = data.engineVolume; // Použijeme hlasitosť nastavenú v ObstacleData
             source.Play();
         }
 
