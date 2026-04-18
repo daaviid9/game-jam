@@ -3748,6 +3748,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9124439886483944626, guid: 93903fac38405d94381bff9993d61f64, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7ebebc81ac866c845a1b0f2f16ff0a0b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4676,6 +4680,9 @@ MonoBehaviour:
   reelsAudioSource: {fileID: 2114611484}
   reelAudioClips:
   - {fileID: 8300000, guid: 3e08262274c604a439a5a0c2f718b794, type: 3}
+  - {fileID: 8300000, guid: b57e0d3aa6d838e44a3cfe513c9a8dae, type: 3}
+  - {fileID: 8300000, guid: b57e0d3aa6d838e44a3cfe513c9a8dae, type: 3}
+  - {fileID: 8300000, guid: b57e0d3aa6d838e44a3cfe513c9a8dae, type: 3}
   - {fileID: 8300000, guid: b57e0d3aa6d838e44a3cfe513c9a8dae, type: 3}
 --- !u!114 &2114611483
 MonoBehaviour:
