@@ -125,6 +125,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+        if (GameManager.Instance != null && GameManager.Instance.isPaused) return;
 
         float targetX = (targetLane - 1) * laneDistance;
         float newX = Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * laneChangeSpeed);
@@ -133,7 +134,14 @@ public class PlayerController : MonoBehaviour
         // Zistíme smer a rýchlosť pohybu do boku
         float movementDelta = newX - lastX;
         // Ak ideme doprava (delta > 0), auto sa nakloní doľava a naopak (preto to mínus)
-        float targetTilt = -(movementDelta / Time.deltaTime) * (maxTiltAngle / 2f);
+        float targetTilt = 0f;
+        
+        // POISTKA: Ak by bol deltaTime po odpauzovaní hneď prvý frame náhodou 0, vyhneme sa deleniu nulou (NaN)
+        if (Time.deltaTime > 0.0001f)
+        {
+            targetTilt = -(movementDelta / Time.deltaTime) * (maxTiltAngle / 2f);
+        }
+
         targetTilt = Mathf.Clamp(targetTilt, -maxTiltAngle, maxTiltAngle);
 
         // Plynulé vyhladenie náklonu
