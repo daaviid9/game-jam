@@ -358,8 +358,8 @@ MonoBehaviour:
   carChance: 60
   edgeChance: 15
   barricadeChance: 25
-  spawnDistance: 14.5
-  spawnZ: 60
+  spawnInterval: 14.5
+  spawnDistanceForward: 160
   laneDistance: 3
   spawnYOffset: -0.5
 --- !u!114 &194867908
@@ -754,7 +754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhoneSystem
   fomoSlider: {fileID: 1315520856}
-  reelsManager: {fileID: 0}
+  reelsManager: {fileID: 2114611482}
   handController: {fileID: 679730008}
   postProcessVolume: {fileID: 832575518}
   maxVignetteIntensity: 1
