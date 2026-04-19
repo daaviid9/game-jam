@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 public class ObstacleSpawner : MonoBehaviour
 {
@@ -14,9 +15,14 @@ public class ObstacleSpawner : MonoBehaviour
     [Range(0, 100)] public float barricadeChance = 20f;
 
     [Header("Spawn Nastavenia")]
-    [Tooltip("Vzdialenosť v metroch medzi vygenerovanými prekážkami. Čím menšie číslo, tým hustejšia premávka.")]
-    public float spawnDistance = 14.5f;
-    public float spawnZ = 40f; 
+    [Tooltip("Vzdialenosť v metroch medzi vygenerovanými prekážkami (frekvencia). Čím menšie číslo, tým hustejšia premávka.")]
+    [FormerlySerializedAs("spawnDistance")]
+    public float spawnInterval = 14.5f;
+
+    [Tooltip("Vzdialenosť v metroch vpredu, kde sa prekážky objavia. Zvýš, ak vidíš ako 'vyskakujú'.")]
+    [FormerlySerializedAs("spawnZ")]
+    public float spawnDistanceForward = 160f; 
+
     public float laneDistance = 3f;
     
     [Tooltip("Výška (Y), v ktorej sa prekážky objavia. Zmeň do mínusu, ak lietajú nad zemou.")]
@@ -32,7 +38,7 @@ public class ObstacleSpawner : MonoBehaviour
         distanceTraveled += WorldMover.moveSpeed * Time.deltaTime;
         
         // Ak sme prešli požadovanú vzdialenosť, vygeneruje sa prekážka
-        if (distanceTraveled >= spawnDistance)
+        if (distanceTraveled >= spawnInterval)
         {
             SpawnSophisticatedObstacle();
             distanceTraveled = 0; // Reset vzdialenosti do ďalšej prekážky
@@ -92,7 +98,7 @@ public class ObstacleSpawner : MonoBehaviour
         }
 
         // Vypočítať pozíciu
-        Vector3 spawnPos = new Vector3((lane - 1) * laneDistance, spawnYOffset, spawnZ);
+        Vector3 spawnPos = new Vector3((lane - 1) * laneDistance, spawnYOffset, spawnDistanceForward    );
         
         GameObject obstacle = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
         
